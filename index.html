@@ -6,6 +6,7 @@
   <title>Reading Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" as="style" />
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -24,7 +25,6 @@
     }
     .container { width: 100%; max-width: 480px; }
 
-    /* ── PIN Screen ─────────────────────────────────────── */
     .pin-screen {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; min-height: 70vh; text-align: center;
@@ -36,35 +36,21 @@
     }
     .pin-screen h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
     .pin-screen p { color: var(--text-secondary); font-size: 14px; font-weight: 500; margin-bottom: 28px; }
-
-    .pin-input-wrap {
-      display: flex; gap: 10px; margin-bottom: 12px;
-    }
+    .pin-input-wrap { display: flex; gap: 10px; margin-bottom: 12px; }
     .pin-input-wrap input {
       width: 44px; height: 54px; text-align: center; font-family: 'Urbanist', sans-serif;
       font-size: 22px; font-weight: 800; background: var(--surface);
       border: 1.5px solid var(--border); border-radius: 12px; color: var(--text);
-      transition: border-color 0.2s, box-shadow 0.2s;
-      -webkit-text-security: disc;
+      transition: border-color 0.2s, box-shadow 0.2s; -webkit-text-security: disc;
     }
-    .pin-input-wrap input:focus {
-      outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-    .pin-input-wrap input.error {
-      border-color: var(--error); animation: shake 0.4s ease;
-    }
+    .pin-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .pin-input-wrap input.error { border-color: var(--error); animation: shake 0.4s ease; }
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-3px); }
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)}
+      50%{transform:translateX(5px)} 75%{transform:translateX(-3px)}
     }
-    .pin-status {
-      margin-top: 8px; font-size: 13px; font-weight: 600;
-      color: var(--error); min-height: 20px;
-    }
+    .pin-status { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--error); min-height: 20px; }
 
-    /* ── Main App ───────────────────────────────────────── */
     .app { display: none; }
     .app.visible { display: block; }
 
@@ -82,10 +68,7 @@
       border-radius: 16px; padding: 24px; margin-bottom: 14px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .card-title {
-      font-size: 11px; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 1.4px; color: var(--text-dim); margin-bottom: 18px;
-    }
+    .card-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; color: var(--text-dim); margin-bottom: 18px; }
 
     .book-selector { position: relative; }
     .book-selector select {
@@ -95,10 +78,7 @@
       appearance: none; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s;
     }
     .book-selector select:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .book-selector::after {
-      content: '▾'; position: absolute; right: 16px; top: 50%;
-      transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;
-    }
+    .book-selector::after { content: '▾'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; }
 
     .book-info { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
     .info-chip {
@@ -109,18 +89,9 @@
     .info-chip .value { color: var(--text); font-weight: 700; }
 
     .progress-section { margin-top: 14px; }
-    .progress-bar-bg {
-      width: 100%; height: 7px; background: var(--bg); border-radius: 4px;
-      overflow: hidden; border: 1px solid var(--border);
-    }
-    .progress-bar-fill {
-      height: 100%; background: linear-gradient(90deg, var(--accent), #7c6cff);
-      border-radius: 4px; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .progress-label {
-      display: flex; justify-content: space-between; margin-top: 8px;
-      font-size: 12px; font-weight: 600; color: var(--text-dim);
-    }
+    .progress-bar-bg { width: 100%; height: 7px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #7c6cff); border-radius: 4px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .progress-label { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-dim); }
     .progress-label .pct { color: var(--accent); font-weight: 800; }
 
     .field { margin-bottom: 18px; }
@@ -178,10 +149,7 @@
     .toast.error { background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error); }
 
     .sessions-list { list-style: none; }
-    .session-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 0; border-bottom: 1px solid var(--border);
-    }
+    .session-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); }
     .session-item:last-child { border-bottom: none; }
     .session-left { display: flex; flex-direction: column; gap: 2px; }
     .session-date { font-size: 14px; font-weight: 700; }
@@ -208,8 +176,6 @@
 </head>
 <body>
   <div class="container">
-
-    <!-- ── PIN Screen ───────────────────────────────────── -->
     <div id="pinScreen" class="pin-screen">
       <div class="pin-icon">🔒</div>
       <h2>Enter PIN</h2>
@@ -225,14 +191,12 @@
       <div class="pin-status" id="pinStatus"></div>
     </div>
 
-    <!-- ── Main App ──────────────────────────────────────── -->
     <div id="app" class="app">
       <div class="header">
         <div class="header-icon">📖</div>
         <h1>Reading Tracker</h1>
         <p>Log your reading sessions</p>
       </div>
-
       <div class="card">
         <div class="card-title">Select Book</div>
         <div class="book-selector">
@@ -245,44 +209,25 @@
         </div>
         <div class="progress-section" id="progressSection" style="display:none;">
           <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-          <div class="progress-label">
-            <span id="progressPages">0 / 0 pages</span>
-            <span class="pct" id="progressPct">0%</span>
-          </div>
+          <div class="progress-label"><span id="progressPages">0 / 0 pages</span><span class="pct" id="progressPct">0%</span></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title">Log Session</div>
-        <div class="field">
-          <label>Date</label>
-          <input type="date" id="dateInput" />
-        </div>
+        <div class="field"><label>Date</label><input type="date" id="dateInput" /></div>
         <div class="input-row">
-          <div class="field">
-            <label>Time spent <span class="hint">(HH:MM:SS)</span></label>
-            <input type="text" id="timeInput" placeholder="00:45:00" maxlength="8" inputmode="numeric" />
-          </div>
-          <div class="field">
-            <label>Page got to</label>
-            <input type="number" id="endPageInput" placeholder="e.g. 186" min="1" />
-          </div>
+          <div class="field"><label>Time spent <span class="hint">(HH:MM:SS)</span></label><input type="text" id="timeInput" placeholder="00:45:00" maxlength="8" inputmode="numeric" /></div>
+          <div class="field"><label>Page got to</label><input type="number" id="endPageInput" placeholder="e.g. 186" min="1" /></div>
         </div>
-        <div class="calc-preview" id="calcPreview">
-          📖 Pages this session: <span class="calc-value" id="calcPages">—</span>
-        </div>
+        <div class="calc-preview" id="calcPreview">📖 Pages this session: <span class="calc-value" id="calcPages">—</span></div>
       </div>
-
       <button class="submit-btn" id="submitBtn">Save Session</button>
-
       <div class="card" style="margin-top: 14px;">
         <div class="card-title">Recent Sessions</div>
         <div id="recentSessions"><div class="empty-state">Loading...</div></div>
       </div>
-
       <button class="lock-btn" id="lockBtn">🔒 Lock</button>
     </div>
-
     <div class="toast" id="toast"></div>
   </div>
 
@@ -295,93 +240,63 @@ var books = [];
 var lastPage = 0;
 var totalPages = 0;
 
-// ── PIN Logic ─────────────────────────────────────────────────
 var elPinScreen = document.getElementById("pinScreen");
 var elApp = document.getElementById("app");
 var elPinStatus = document.getElementById("pinStatus");
 var pinInputs = document.querySelectorAll(".pin-char");
 
-// Check saved PIN
 var savedPin = localStorage.getItem("reading_tracker_pin");
-if (savedPin) {
-  userPin = savedPin;
-  unlockApp();
-}
+if (savedPin) { userPin = savedPin; unlockApp(); }
 
-// Handle input on each PIN box
 pinInputs.forEach(function(input, idx) {
-  input.addEventListener("input", function(e) {
+  input.addEventListener("input", function() {
     var val = input.value.replace(/[^\d]/g, "");
     input.value = val.slice(0, 1);
-
-    if (val && idx < 5) {
-      pinInputs[idx + 1].focus();
-    }
-
-    // Check if all 6 digits entered
+    if (val && idx < 5) pinInputs[idx + 1].focus();
     var fullPin = "";
     pinInputs.forEach(function(inp) { fullPin += inp.value; });
-    if (fullPin.length === 6) {
-      verifyPin(fullPin);
-    }
+    if (fullPin.length === 6) verifyPin(fullPin);
   });
-
   input.addEventListener("keydown", function(e) {
-    if (e.key === "Backspace" && !input.value && idx > 0) {
-      pinInputs[idx - 1].focus();
-      pinInputs[idx - 1].value = "";
-    }
-    // Only allow digits
-    if (e.key.length === 1 && (e.key < "0" || e.key > "9")) {
-      e.preventDefault();
-    }
+    if (e.key === "Backspace" && !input.value && idx > 0) { pinInputs[idx - 1].focus(); pinInputs[idx - 1].value = ""; }
+    if (e.key.length === 1 && (e.key < "0" || e.key > "9")) e.preventDefault();
   });
-
-  // Handle paste
   input.addEventListener("paste", function(e) {
     e.preventDefault();
     var pasted = (e.clipboardData || window.clipboardData).getData("text").replace(/[^\d]/g, "");
-    for (var i = 0; i < 6 && i < pasted.length; i++) {
-      pinInputs[i].value = pasted[i];
-    }
-    if (pasted.length >= 6) {
-      pinInputs[5].focus();
-      verifyPin(pasted.slice(0, 6));
-    } else if (pasted.length > 0) {
-      pinInputs[Math.min(pasted.length, 5)].focus();
-    }
+    for (var i = 0; i < 6 && i < pasted.length; i++) pinInputs[i].value = pasted[i];
+    if (pasted.length >= 6) { pinInputs[5].focus(); verifyPin(pasted.slice(0, 6)); }
+    else if (pasted.length > 0) pinInputs[Math.min(pasted.length, 5)].focus();
   });
 });
 
 async function verifyPin(pin) {
   elPinStatus.textContent = "Verifying...";
   try {
-    var qs = new URLSearchParams({ key: API_KEY, pin: pin, action: "books" }).toString();
+    // Use init endpoint — verifies PIN AND loads all data in one call
+    var qs = new URLSearchParams({ key: API_KEY, pin: pin, action: "init", recent_limit: 5 }).toString();
     var res = await fetch(API_BASE + "?" + qs, { redirect: "follow" });
     var data = await res.json();
-
     if (data.ok) {
       userPin = pin;
       localStorage.setItem("reading_tracker_pin", pin);
-      unlockApp();
+      elPinScreen.style.display = "none";
+      elApp.classList.add("visible");
+      // Data already loaded — render immediately
+      initAppWithData(data);
     } else if (data.error === "Invalid PIN") {
       showPinError("Wrong PIN. Try again.");
     } else {
       showPinError(data.error || "Error. Try again.");
     }
-  } catch (err) {
-    showPinError("Connection error. Try again.");
-  }
+  } catch (err) { showPinError("Connection error. Try again."); }
 }
 
 function showPinError(msg) {
   elPinStatus.textContent = msg;
   pinInputs.forEach(function(inp) { inp.classList.add("error"); });
   setTimeout(function() {
-    pinInputs.forEach(function(inp) {
-      inp.value = "";
-      inp.classList.remove("error");
-    });
+    pinInputs.forEach(function(inp) { inp.value = ""; inp.classList.remove("error"); });
     pinInputs[0].focus();
     elPinStatus.textContent = "";
   }, 900);
@@ -393,56 +308,120 @@ function unlockApp() {
   initApp();
 }
 
-// Lock button
 document.getElementById("lockBtn").addEventListener("click", function() {
   localStorage.removeItem("reading_tracker_pin");
-  userPin = "";
-  pinInputs.forEach(function(inp) { inp.value = ""; });
-  elPinScreen.style.display = "flex";
-  elApp.classList.remove("visible");
-  elPinStatus.textContent = "";
-  pinInputs[0].focus();
+  userPin = ""; pinInputs.forEach(function(inp) { inp.value = ""; });
+  elPinScreen.style.display = "flex"; elApp.classList.remove("visible");
+  elPinStatus.textContent = ""; pinInputs[0].focus();
 });
 
-// ── Main App ──────────────────────────────────────────────────
-var elBookSelect   = document.getElementById("bookSelect");
-var elBookInfo     = document.getElementById("bookInfo");
-var elTotalPages   = document.getElementById("totalPagesChip");
-var elLastPage     = document.getElementById("lastPageChip");
-var elRating       = document.getElementById("ratingChip");
+var elBookSelect = document.getElementById("bookSelect");
+var elBookInfo = document.getElementById("bookInfo");
+var elTotalPages = document.getElementById("totalPagesChip");
+var elLastPage = document.getElementById("lastPageChip");
+var elRating = document.getElementById("ratingChip");
 var elProgressSection = document.getElementById("progressSection");
 var elProgressFill = document.getElementById("progressFill");
 var elProgressPages = document.getElementById("progressPages");
-var elProgressPct  = document.getElementById("progressPct");
-var elDate         = document.getElementById("dateInput");
-var elTime         = document.getElementById("timeInput");
-var elEndPage      = document.getElementById("endPageInput");
-var elCalcPreview  = document.getElementById("calcPreview");
-var elCalcPages    = document.getElementById("calcPages");
-var elSubmitBtn    = document.getElementById("submitBtn");
-var elRecent       = document.getElementById("recentSessions");
-var elToast        = document.getElementById("toast");
+var elProgressPct = document.getElementById("progressPct");
+var elDate = document.getElementById("dateInput");
+var elTime = document.getElementById("timeInput");
+var elEndPage = document.getElementById("endPageInput");
+var elCalcPreview = document.getElementById("calcPreview");
+var elCalcPages = document.getElementById("calcPages");
+var elSubmitBtn = document.getElementById("submitBtn");
+var elRecent = document.getElementById("recentSessions");
+var elToast = document.getElementById("toast");
 
 elTime.addEventListener("input", function() {
   var raw = elTime.value.replace(/[^\d]/g, "");
-  var formatted = "";
-  for (var i = 0; i < raw.length && i < 6; i++) {
-    if (i === 2 || i === 4) formatted += ":";
-    formatted += raw[i];
-  }
-  elTime.value = formatted;
+  var f = "";
+  for (var i = 0; i < raw.length && i < 6; i++) { if (i === 2 || i === 4) f += ":"; f += raw[i]; }
+  elTime.value = f;
 });
 elTime.addEventListener("keydown", function(e) {
-  var allowed = ["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete", "Home", "End"];
-  if (allowed.indexOf(e.key) !== -1) return;
+  var ok = ["Backspace","Tab","ArrowLeft","ArrowRight","Delete","Home","End"];
+  if (ok.indexOf(e.key) !== -1) return;
   if (e.key >= "0" && e.key <= "9") return;
   e.preventDefault();
 });
 
-function initApp() {
+// Called when PIN was already saved — need to fetch data
+async function initApp() {
   elDate.value = new Date().toISOString().split("T")[0];
-  loadBooks();
-  loadRecentSessions();
+  try {
+    var data = await apiGet({ action: "init", recent_limit: 5 });
+    if (data.ok) initAppWithData(data);
+    else throw new Error(data.error);
+  } catch (err) {
+    console.error("initApp:", err);
+    showToast("Error loading: " + err.message, "error");
+  }
+}
+
+// Called with data already available (from PIN verify or initApp)
+function initAppWithData(data) {
+  elDate.value = new Date().toISOString().split("T")[0];
+  books = data.books || [];
+  if (books.length === 0) {
+    elBookSelect.innerHTML = '<option value="">No unfinished books found</option>';
+  } else {
+    var html = "";
+    for (var i = 0; i < books.length; i++) {
+      var b = books[i];
+      html += '<option value="' + b.title + '" data-pages="' + b.total_pages +
+        '" data-rating="' + (b.goodread_rating || "—") +
+        '" data-read="' + (b.pages_read || 0) + '">' +
+        b.title + ' — ' + b.author + '</option>';
+    }
+    elBookSelect.innerHTML = html;
+  }
+  renderRecentSessions(data.sessions || []);
+  // Set first book info from the pages_read already in data
+  if (books.length > 0) showBookInfo(books[0]);
+}
+
+function showBookInfo(book) {
+  totalPages = book.total_pages;
+  lastPage = book.pages_read || 0;
+  elTotalPages.innerHTML = '<span class="value">' + totalPages + '</span> pages';
+  elLastPage.textContent = lastPage;
+  elRating.textContent = book.goodread_rating || "—";
+  elBookInfo.style.display = "flex";
+  var pct = totalPages > 0 ? Math.round((lastPage / totalPages) * 100) : 0;
+  elProgressFill.style.width = pct + "%";
+  elProgressPages.textContent = lastPage + " / " + totalPages + " pages";
+  elProgressPct.textContent = pct + "%";
+  elProgressSection.style.display = "block";
+  elCalcPreview.classList.remove("visible");
+  elEndPage.value = "";
+  elEndPage.placeholder = "e.g. " + (lastPage + 20);
+}
+
+async function onBookChange() {
+  var title = elBookSelect.value;
+  if (!title) { elBookInfo.style.display = "none"; elProgressSection.style.display = "none"; return; }
+  // Find book in already-loaded data
+  var book = books.find(function(b) { return b.title === title; });
+  if (book) {
+    showBookInfo(book);
+  }
+}
+
+function onEndPageInput() {
+  var endPage = parseInt(elEndPage.value);
+  if (!isNaN(endPage) && endPage > lastPage) {
+    elCalcPages.textContent = endPage - lastPage;
+    elCalcPreview.classList.add("visible");
+  } else { elCalcPreview.classList.remove("visible"); }
+}
+
+function parseTimeToSeconds(str) {
+  var parts = str.trim().split(":").map(Number);
+  if (parts.some(isNaN)) return NaN;
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return NaN;
 }
 
 async function apiGet(params) {
@@ -464,78 +443,9 @@ async function apiPost(payload) {
   return await res.json();
 }
 
-async function loadBooks() {
-  try {
-    elBookSelect.innerHTML = '<option value="">Loading books...</option>';
-    var data = await apiGet({ action: "books" });
-    if (!data.ok) throw new Error(data.error || "API error");
-    books = data.books;
-    if (books.length === 0) {
-      elBookSelect.innerHTML = '<option value="">No unfinished books found</option>';
-      return;
-    }
-    var html = "";
-    for (var i = 0; i < books.length; i++) {
-      var b = books[i];
-      html += '<option value="' + b.title + '" data-pages="' + b.total_pages +
-        '" data-rating="' + (b.goodread_rating || "—") +
-        '" data-read="' + (b.pages_read || 0) + '">' +
-        b.title + ' — ' + b.author + '</option>';
-    }
-    elBookSelect.innerHTML = html;
-    await onBookChange();
-  } catch (err) {
-    console.error("loadBooks:", err);
-    showToast("Error: " + err.message, "error");
-    elBookSelect.innerHTML = '<option value="">Failed: ' + err.message + '</option>';
-  }
-}
-
-async function onBookChange() {
-  var title = elBookSelect.value;
-  if (!title) { elBookInfo.style.display = "none"; elProgressSection.style.display = "none"; return; }
-  var opt = elBookSelect.selectedOptions[0];
-  totalPages = parseInt(opt.dataset.pages) || 0;
-  var rating = opt.dataset.rating;
-  try {
-    var data = await apiGet({ action: "lastpage", book_title: title });
-    lastPage = (data.ok) ? (data.last_page || 0) : (parseInt(opt.dataset.read) || 0);
-  } catch (err) { lastPage = parseInt(opt.dataset.read) || 0; }
-  elTotalPages.innerHTML = '<span class="value">' + totalPages + '</span> pages';
-  elLastPage.textContent = lastPage;
-  elRating.textContent = rating;
-  elBookInfo.style.display = "flex";
-  var pct = totalPages > 0 ? Math.round((lastPage / totalPages) * 100) : 0;
-  elProgressFill.style.width = pct + "%";
-  elProgressPages.textContent = lastPage + " / " + totalPages + " pages";
-  elProgressPct.textContent = pct + "%";
-  elProgressSection.style.display = "block";
-  elCalcPreview.classList.remove("visible");
-  elEndPage.value = "";
-  elEndPage.placeholder = "e.g. " + (lastPage + 20);
-}
-
-function onEndPageInput() {
-  var endPage = parseInt(elEndPage.value);
-  if (!isNaN(endPage) && endPage > lastPage) {
-    elCalcPages.textContent = endPage - lastPage;
-    elCalcPreview.classList.add("visible");
-  } else { elCalcPreview.classList.remove("visible"); }
-}
-
-function parseTimeToSeconds(str) {
-  var parts = str.trim().split(":").map(Number);
-  if (parts.some(isNaN)) return NaN;
-  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-  if (parts.length === 2) return parts[0] * 60 + parts[1];
-  return NaN;
-}
-
 async function submit() {
-  var title = elBookSelect.value;
-  var date = elDate.value;
-  var timeStr = elTime.value.trim();
-  var endPage = parseInt(elEndPage.value);
+  var title = elBookSelect.value, date = elDate.value;
+  var timeStr = elTime.value.trim(), endPage = parseInt(elEndPage.value);
   if (!title) return showToast("Select a book", "error");
   if (!date) return showToast("Select a date", "error");
   if (!timeStr) return showToast("Enter time spent", "error");
@@ -545,8 +455,7 @@ async function submit() {
   if (endPage > totalPages) return showToast("Page can't exceed " + totalPages, "error");
   var pagesRead = endPage - lastPage;
   var seconds = parseTimeToSeconds(timeStr);
-  elSubmitBtn.disabled = true;
-  elSubmitBtn.classList.add("loading");
+  elSubmitBtn.disabled = true; elSubmitBtn.classList.add("loading");
   try {
     var data = await apiPost({
       action: "log_reading", date: date, title: title,
@@ -555,26 +464,22 @@ async function submit() {
     if (!data.ok) throw new Error(data.error || "Failed to save");
     showToast("Saved! " + pagesRead + " pages of \"" + title + "\"", "success");
     lastPage = endPage;
+    // Update the book's pages_read in memory
+    var book = books.find(function(b) { return b.title === title; });
+    if (book) book.pages_read = lastPage;
     elLastPage.textContent = lastPage;
     var pct = totalPages > 0 ? Math.round((lastPage / totalPages) * 100) : 0;
     elProgressFill.style.width = pct + "%";
     elProgressPages.textContent = lastPage + " / " + totalPages + " pages";
     elProgressPct.textContent = pct + "%";
-    elTime.value = "";
-    elEndPage.value = "";
+    elTime.value = ""; elEndPage.value = "";
     elEndPage.placeholder = "e.g. " + (lastPage + 20);
     elCalcPreview.classList.remove("visible");
-    loadRecentSessions();
+    // Refresh recent sessions only (single call)
+    var recent = await apiGet({ action: "recent", limit: 5 });
+    if (recent.ok) renderRecentSessions(recent.sessions || []);
   } catch (err) { showToast(err.message, "error"); }
   finally { elSubmitBtn.disabled = false; elSubmitBtn.classList.remove("loading"); }
-}
-
-async function loadRecentSessions() {
-  try {
-    var data = await apiGet({ action: "recent", limit: 5 });
-    if (!data.ok) throw new Error(data.error);
-    renderRecentSessions(data.sessions || []);
-  } catch (err) { elRecent.innerHTML = '<div class="empty-state">Could not load sessions</div>'; }
 }
 
 function renderRecentSessions(sessions) {
@@ -599,9 +504,9 @@ function renderRecentSessions(sessions) {
 function formatDate(dateStr) {
   if (!dateStr || dateStr === "Invalid Date") return "—";
   try {
-    var parts = dateStr.split("-");
-    if (parts.length === 3) {
-      var d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    var p = dateStr.split("-");
+    if (p.length === 3) {
+      var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
       return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
     }
     return dateStr;

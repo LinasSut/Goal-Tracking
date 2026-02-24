@@ -6,181 +6,179 @@
   <title>Reading Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" as="style" />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #f4f3f0; --surface: #ffffff; --border: #e4e2dd;
-      --border-focus: #5046e5; --accent: #5046e5; --accent-light: #ededfc;
-      --accent-glow: rgba(80,70,229,0.15); --text: #1a1a1a;
-      --text-secondary: #6b6b6b; --text-dim: #9e9e9e;
-      --success: #16a06e; --success-bg: #edf8f3; --success-border: #c8eddb;
-      --error: #dc3545; --error-bg: #fdf0f1; --error-border: #f5c6cb;
-    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Urbanist', sans-serif; background: var(--bg); color: var(--text);
-      min-height: 100vh; display: flex; justify-content: center; padding: 24px 16px;
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
       -webkit-font-smoothing: antialiased;
+      font-family: 'Manrope', sans-serif;
     }
-    .container { width: 100%; max-width: 480px; }
+    .container { width: 520px; }
 
+    /* ── PIN Screen ── */
     .pin-screen {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 70vh; text-align: center;
+      justify-content: center; min-height: 60vh; text-align: center;
     }
-    .pin-screen .pin-icon {
-      width: 72px; height: 72px; background: var(--accent-light);
-      border-radius: 20px; display: flex; align-items: center;
-      justify-content: center; font-size: 32px; margin-bottom: 24px;
+    .pin-header {
+      width: 100%; display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 60px; padding-bottom: 20px; border-bottom: 2px solid #5046e5;
     }
-    .pin-screen h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-    .pin-screen p { color: var(--text-secondary); font-size: 14px; font-weight: 500; margin-bottom: 28px; }
-    .pin-input-wrap { display: flex; gap: 10px; margin-bottom: 12px; }
-    .pin-input-wrap input {
-      width: 44px; height: 54px; text-align: center; font-family: 'Urbanist', sans-serif;
-      font-size: 22px; font-weight: 800; background: var(--surface);
-      border: 1.5px solid var(--border); border-radius: 12px; color: var(--text);
-      transition: border-color 0.2s, box-shadow 0.2s; -webkit-text-security: disc;
+    .pin-header-title { font-size: 11px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
+    .pin-header-sub { font-size: 11px; font-weight: 600; color: #999; }
+    .pin-label {
+      font-size: 9px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 2px; color: #ccc; margin-bottom: 14px;
     }
-    .pin-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .pin-input-wrap input.error { border-color: var(--error); animation: shake 0.4s ease; }
+    .pin-wrap { display: flex; gap: 10px; margin-bottom: 12px; }
+    .pin-wrap input {
+      width: 42px; height: 52px; text-align: center;
+      font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800;
+      background: transparent; border: none; border-bottom: 2px solid #e8e6e1;
+      color: #1a1a1a; -webkit-text-security: disc; transition: border-color 0.2s;
+    }
+    .pin-wrap input:focus { outline: none; border-bottom-color: #5046e5; }
+    .pin-wrap input.error { border-bottom-color: #dc3545; animation: shake 0.4s ease; }
     @keyframes shake {
       0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)}
       50%{transform:translateX(5px)} 75%{transform:translateX(-3px)}
     }
-    .pin-status { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--error); min-height: 20px; }
+    .pin-status { font-size: 12px; font-weight: 700; color: #dc3545; min-height: 18px; margin-top: 4px; }
 
+    /* ── App ── */
     .app { display: none; }
     .app.visible { display: block; }
 
-    .header { text-align: center; padding: 32px 0 36px; }
-    .header-icon {
-      width: 56px; height: 56px; background: var(--accent-light);
-      border-radius: 16px; display: inline-flex; align-items: center;
-      justify-content: center; font-size: 26px; margin-bottom: 18px;
+    .header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #5046e5;
     }
-    .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
-    .header p { color: var(--text-secondary); font-size: 15px; font-weight: 500; }
+    .title { font-size: 11px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
+    .date-display { font-size: 11px; font-weight: 600; color: #999; }
 
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px; margin-bottom: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    .book-row {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 14px; min-height: 72px;
     }
-    .card-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; color: var(--text-dim); margin-bottom: 18px; }
-
-    .book-selector { position: relative; }
-    .book-selector select {
-      width: 100%; padding: 13px 44px 13px 16px; background: var(--bg);
-      border: 1.5px solid var(--border); border-radius: 10px; color: var(--text);
-      font-family: 'Urbanist', sans-serif; font-size: 15px; font-weight: 600;
-      appearance: none; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s;
+    .book-cover {
+      width: 48px; height: 72px; border-radius: 2px; overflow: hidden;
+      flex-shrink: 0; background: #f4f3f0;
+      display: flex; align-items: center; justify-content: center;
     }
-    .book-selector select:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .book-selector::after { content: '▾'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .book-cover .placeholder { font-size: 24px; color: #ddd; }
+    .book-info { flex: 1; }
+    .book-name { font-size: 16px; font-weight: 800; color: #1a1a1a; line-height: 1.2; }
+    .book-author { font-size: 12px; font-weight: 500; color: #aaa; margin-top: 2px; }
 
-    .book-info { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-    .info-chip {
-      display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px;
-      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-      font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    .chips { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .chip {
+      font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 2px;
+      background: #f6f5f2; color: #888; letter-spacing: 0.3px;
+      display: flex; align-items: center; gap: 5px;
     }
-    .info-chip .value { color: var(--text); font-weight: 700; }
+    .chip .num { font-weight: 800; color: #1a1a1a; }
+    .chip.accent { background: #ededfc; color: #5046e5; }
+    .chip.accent .num { color: #5046e5; }
 
-    .progress-section { margin-top: 14px; }
-    .progress-bar-bg { width: 100%; height: 7px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
-    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #7c6cff); border-radius: 4px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1); }
-    .progress-label { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-dim); }
-    .progress-label .pct { color: var(--accent); font-weight: 800; }
+    .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .progress-bar { flex: 1; height: 4px; background: #f0ece4; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #5046e5, #7c6cff); transition: width 0.6s ease; }
+    .progress-pct { font-size: 12px; font-weight: 800; color: #5046e5; min-width: 36px; text-align: right; }
 
-    .field { margin-bottom: 18px; }
-    .field:last-child { margin-bottom: 0; }
-    .field label { display: block; font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 7px; }
-    .field label .hint { font-weight: 500; color: var(--text-dim); }
-    .input-row { display: flex; gap: 12px; }
-    .input-row .field { flex: 1; }
+    .select {
+      width: 100%; padding: 12px 14px; border: none;
+      border-bottom: 2px solid #e8e6e1; font-family: 'Manrope', sans-serif;
+      font-size: 14px; font-weight: 700; color: #1a1a1a;
+      background: transparent; appearance: none; cursor: pointer;
+      margin-bottom: 24px; transition: border-color 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 4px center;
+    }
+    .select:focus { outline: none; border-bottom-color: #5046e5; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 28px; }
+    .field { padding: 0 12px; border-right: 1px solid #eee; }
+    .field:first-child { padding-left: 0; }
+    .field:last-child { border-right: none; padding-right: 0; }
+    .field label {
+      display: block; font-size: 9px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 2px; color: #ccc; margin-bottom: 6px;
+    }
     .field input {
-      width: 100%; padding: 13px 16px; background: var(--bg);
-      border: 1.5px solid var(--border); border-radius: 10px; color: var(--text);
-      font-family: 'Urbanist', sans-serif; font-size: 15px; font-weight: 600;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%; padding: 8px 0; border: none;
+      border-bottom: 1px solid #e8e6e1; font-family: 'Manrope', sans-serif;
+      font-size: 15px; font-weight: 700; color: #1a1a1a;
+      background: transparent; transition: border-color 0.2s;
     }
-    .field input::placeholder { color: var(--text-dim); font-weight: 500; }
-    .field input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .field input:focus { outline: none; border-bottom-color: #5046e5; }
+    .field input::placeholder { color: #ddd; font-weight: 500; }
 
-    .calc-preview {
-      display: flex; align-items: center; gap: 8px; padding: 11px 16px;
-      background: var(--accent-light); border: 1px solid rgba(80,70,229,0.15);
-      border-radius: 10px; margin-top: 12px; font-size: 14px; font-weight: 600;
-      color: var(--text-secondary); opacity: 0; transform: translateY(-4px);
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .calc-preview.visible { opacity: 1; transform: translateY(0); }
-    .calc-preview .calc-value { color: var(--accent); font-weight: 800; font-size: 16px; }
-
-    .submit-btn {
-      width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none;
-      border-radius: 12px; font-family: 'Urbanist', sans-serif; font-size: 15px;
-      font-weight: 800; cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
+    .footer { display: flex; align-items: center; justify-content: space-between; }
+    .calc-wrap { display: flex; flex-direction: column; opacity: 0; transform: translateY(-4px); transition: all 0.3s; }
+    .calc-wrap.visible { opacity: 1; transform: translateY(0); }
+    .calc-value { font-size: 24px; font-weight: 800; color: #5046e5; }
+    .calc-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #ccc; }
+    .btn {
+      padding: 12px 32px; background: #5046e5; color: white; border: none;
+      font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+      transition: all 0.2s; box-shadow: 0 4px 12px rgba(80,70,229,0.2);
       position: relative; overflow: hidden;
     }
-    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
-    .submit-btn:active { transform: translateY(0); }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-    .submit-btn.loading { color: transparent; }
-    .submit-btn.loading::after {
-      content: ''; position: absolute; width: 20px; height: 20px;
-      border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff;
-      border-radius: 50%; top: 50%; left: 50%; margin: -10px 0 0 -10px;
+    .btn:hover { background: #4038c7; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(80,70,229,0.3); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn.loading { color: transparent; }
+    .btn.loading::after {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; top: 50%; left: 50%; margin: -8px 0 0 -8px;
       animation: spin 0.6s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .lock-btn {
+      display: block; margin: 24px auto 0; padding: 6px 16px;
+      background: transparent; border: none; font-family: 'Manrope', sans-serif;
+      font-size: 11px; font-weight: 600; color: #ddd; cursor: pointer; transition: color 0.2s;
+    }
+    .lock-btn:hover { color: #999; }
+
     .toast {
       position: fixed; bottom: 32px; left: 50%;
-      transform: translateX(-50%) translateY(24px); padding: 13px 22px;
-      border-radius: 12px; font-size: 14px; font-weight: 700; opacity: 0;
-      transition: opacity 0.3s, transform 0.3s; pointer-events: none;
-      z-index: 100; max-width: 90%; text-align: center;
+      transform: translateX(-50%) translateY(20px); padding: 12px 24px;
+      border-radius: 4px; font-size: 13px; font-weight: 700; opacity: 0;
+      transition: all 0.3s; pointer-events: none; z-index: 100; max-width: 90%; text-align: center;
     }
     .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success); }
-    .toast.error { background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error); }
+    .toast.success { background: #edf8f3; border: 1px solid #c8eddb; color: #16a06e; }
+    .toast.error { background: #fdf0f1; border: 1px solid #f5c6cb; color: #dc3545; }
 
-    .sessions-list { list-style: none; }
-    .session-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); }
-    .session-item:last-child { border-bottom: none; }
-    .session-left { display: flex; flex-direction: column; gap: 2px; }
-    .session-date { font-size: 14px; font-weight: 700; }
-    .session-book { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
-    .session-right { display: flex; gap: 16px; align-items: center; }
-    .session-stat { text-align: right; }
-    .session-stat .num { font-size: 14px; font-weight: 800; color: var(--accent); }
-    .session-stat .label { font-size: 11px; font-weight: 600; color: var(--text-dim); }
-    .empty-state { text-align: center; padding: 24px; color: var(--text-dim); font-size: 14px; font-weight: 500; }
-
-    .lock-btn {
-      display: block; margin: 20px auto 0; padding: 8px 20px;
-      background: transparent; border: 1px solid var(--border); border-radius: 8px;
-      font-family: 'Urbanist', sans-serif; font-size: 12px; font-weight: 600;
-      color: var(--text-dim); cursor: pointer; transition: all 0.2s;
-    }
-    .lock-btn:hover { border-color: var(--error); color: var(--error); }
-
-    @media (max-width: 380px) {
-      .input-row { flex-direction: column; gap: 0; }
-      .pin-input-wrap input { width: 38px; height: 48px; font-size: 18px; }
+    @media (max-width: 560px) {
+      .container { width: 100%; }
+      .grid { grid-template-columns: 1fr; gap: 16px; }
+      .field { padding: 0; border-right: none; }
+      .chips { gap: 6px; }
+      .chip { font-size: 10px; padding: 4px 9px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div id="pinScreen" class="pin-screen">
-      <div class="pin-icon">🔒</div>
-      <h2>Enter PIN</h2>
-      <p>Enter your 6-digit PIN to continue</p>
-      <div class="pin-input-wrap" id="pinInputWrap">
+      <div class="pin-header">
+        <div class="pin-header-title">Log Reading</div>
+        <div class="pin-header-sub">🔒 Locked</div>
+      </div>
+      <div class="pin-label">Enter 6-digit PIN</div>
+      <div class="pin-wrap" id="pinWrap">
         <input type="text" maxlength="1" inputmode="numeric" class="pin-char" data-idx="0" autofocus />
         <input type="text" maxlength="1" inputmode="numeric" class="pin-char" data-idx="1" />
         <input type="text" maxlength="1" inputmode="numeric" class="pin-char" data-idx="2" />
@@ -193,38 +191,38 @@
 
     <div id="app" class="app">
       <div class="header">
-        <div class="header-icon">📖</div>
-        <h1>Reading Tracker</h1>
-        <p>Log your reading sessions</p>
+        <div class="title">Log Reading</div>
+        <div class="date-display" id="headerDate"></div>
       </div>
-      <div class="card">
-        <div class="card-title">Select Book</div>
-        <div class="book-selector">
-          <select id="bookSelect"><option value="">Loading books...</option></select>
-        </div>
-        <div class="book-info" id="bookInfo" style="display:none;">
-          <div class="info-chip"><span class="icon">📄</span> <span id="totalPagesChip"><span class="value">—</span> pages</span></div>
-          <div class="info-chip"><span class="icon">📍</span> Last page: <span class="value" id="lastPageChip">—</span></div>
-          <div class="info-chip"><span class="icon">⭐</span> <span class="value" id="ratingChip">—</span></div>
-        </div>
-        <div class="progress-section" id="progressSection" style="display:none;">
-          <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-          <div class="progress-label"><span id="progressPages">0 / 0 pages</span><span class="pct" id="progressPct">0%</span></div>
+      <div class="book-row" id="bookRow" style="display:none;">
+        <div class="book-cover" id="bookCover"><span class="placeholder">📖</span></div>
+        <div class="book-info">
+          <div class="book-name" id="bookName"></div>
+          <div class="book-author" id="bookAuthor"></div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title">Log Session</div>
+      <div class="chips" id="chips" style="display:none;">
+        <div class="chip"><span class="num" id="chipTotal">—</span> pages</div>
+        <div class="chip">Page <span class="num" id="chipCurrent">—</span></div>
+        <div class="chip"><span class="num" id="chipLeft">—</span> left</div>
+        <div class="chip accent">⭐ <span class="num" id="chipRating">—</span></div>
+      </div>
+      <div class="progress-row" id="progressRow" style="display:none;">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-pct" id="progressPct">0%</div>
+      </div>
+      <select class="select" id="bookSelect"><option value="">Loading...</option></select>
+      <div class="grid">
         <div class="field"><label>Date</label><input type="date" id="dateInput" /></div>
-        <div class="input-row">
-          <div class="field"><label>Time spent <span class="hint">(HH:MM:SS)</span></label><input type="text" id="timeInput" placeholder="00:45:00" maxlength="8" inputmode="numeric" /></div>
-          <div class="field"><label>Page got to</label><input type="number" id="endPageInput" placeholder="e.g. 186" min="1" /></div>
-        </div>
-        <div class="calc-preview" id="calcPreview">📖 Pages this session: <span class="calc-value" id="calcPages">—</span></div>
+        <div class="field"><label>Time</label><input type="text" id="timeInput" placeholder="00:45:00" maxlength="8" inputmode="numeric" /></div>
+        <div class="field"><label>Page</label><input type="number" id="endPageInput" placeholder="204" min="1" /></div>
       </div>
-      <button class="submit-btn" id="submitBtn">Save Session</button>
-      <div class="card" style="margin-top: 14px;">
-        <div class="card-title">Recent Sessions</div>
-        <div id="recentSessions"><div class="empty-state">Loading...</div></div>
+      <div class="footer">
+        <div class="calc-wrap" id="calcWrap">
+          <div class="calc-value" id="calcPages">—</div>
+          <div class="calc-label">Pages read</div>
+        </div>
+        <button class="btn" id="submitBtn">Save</button>
       </div>
       <button class="lock-btn" id="lockBtn">🔒 Lock</button>
     </div>
@@ -234,17 +232,24 @@
 <script>
 var API_BASE = "https://script.google.com/macros/s/AKfycbyoEsXTiQRtmyetVXhE_lRrCDs7SjJhBvzl9Jj_YcQdVW86wXv2CeNxXWrpBRIw70cZ/exec";
 var API_KEY = "LS_Reading_tracker_2026";
+var userPin = "", books = [], lastPage = 0, totalPages = 0;
 
-var userPin = "";
-var books = [];
-var lastPage = 0;
-var totalPages = 0;
-
-var elPinScreen = document.getElementById("pinScreen");
-var elApp = document.getElementById("app");
-var elPinStatus = document.getElementById("pinStatus");
+var $ = function(id) { return document.getElementById(id); };
+var elPinScreen = $("pinScreen"), elApp = $("app"), elPinStatus = $("pinStatus");
 var pinInputs = document.querySelectorAll(".pin-char");
+var elBookRow = $("bookRow"), elBookCover = $("bookCover");
+var elBookName = $("bookName"), elBookAuthor = $("bookAuthor");
+var elChips = $("chips"), elChipTotal = $("chipTotal"), elChipCurrent = $("chipCurrent");
+var elChipLeft = $("chipLeft"), elChipRating = $("chipRating");
+var elProgressRow = $("progressRow"), elProgressFill = $("progressFill"), elProgressPct = $("progressPct");
+var elBookSelect = $("bookSelect"), elDate = $("dateInput");
+var elTime = $("timeInput"), elEndPage = $("endPageInput");
+var elCalcWrap = $("calcWrap"), elCalcPages = $("calcPages");
+var elSubmitBtn = $("submitBtn"), elToast = $("toast");
 
+$("headerDate").textContent = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+// PIN
 var savedPin = localStorage.getItem("reading_tracker_pin");
 if (savedPin) { userPin = savedPin; unlockApp(); }
 
@@ -253,9 +258,8 @@ pinInputs.forEach(function(input, idx) {
     var val = input.value.replace(/[^\d]/g, "");
     input.value = val.slice(0, 1);
     if (val && idx < 5) pinInputs[idx + 1].focus();
-    var fullPin = "";
-    pinInputs.forEach(function(inp) { fullPin += inp.value; });
-    if (fullPin.length === 6) verifyPin(fullPin);
+    var full = ""; pinInputs.forEach(function(inp) { full += inp.value; });
+    if (full.length === 6) verifyPin(full);
   });
   input.addEventListener("keydown", function(e) {
     if (e.key === "Backspace" && !input.value && idx > 0) { pinInputs[idx - 1].focus(); pinInputs[idx - 1].value = ""; }
@@ -263,184 +267,149 @@ pinInputs.forEach(function(input, idx) {
   });
   input.addEventListener("paste", function(e) {
     e.preventDefault();
-    var pasted = (e.clipboardData || window.clipboardData).getData("text").replace(/[^\d]/g, "");
-    for (var i = 0; i < 6 && i < pasted.length; i++) pinInputs[i].value = pasted[i];
-    if (pasted.length >= 6) { pinInputs[5].focus(); verifyPin(pasted.slice(0, 6)); }
-    else if (pasted.length > 0) pinInputs[Math.min(pasted.length, 5)].focus();
+    var p = (e.clipboardData || window.clipboardData).getData("text").replace(/[^\d]/g, "");
+    for (var i = 0; i < 6 && i < p.length; i++) pinInputs[i].value = p[i];
+    if (p.length >= 6) { pinInputs[5].focus(); verifyPin(p.slice(0, 6)); }
+    else if (p.length > 0) pinInputs[Math.min(p.length, 5)].focus();
   });
 });
 
 async function verifyPin(pin) {
-  elPinStatus.textContent = "Verifying...";
+  elPinStatus.textContent = "Verifying..."; elPinStatus.style.color = "#999";
   try {
-    // Use init endpoint — verifies PIN AND loads all data in one call
     var qs = new URLSearchParams({ key: API_KEY, pin: pin, action: "init", recent_limit: 5 }).toString();
-    var res = await fetch(API_BASE + "?" + qs, { redirect: "follow" });
-    var data = await res.json();
+    var data = await (await fetch(API_BASE + "?" + qs, { redirect: "follow" })).json();
     if (data.ok) {
-      userPin = pin;
-      localStorage.setItem("reading_tracker_pin", pin);
-      elPinScreen.style.display = "none";
-      elApp.classList.add("visible");
-      // Data already loaded — render immediately
+      userPin = pin; localStorage.setItem("reading_tracker_pin", pin);
+      elPinScreen.style.display = "none"; elApp.classList.add("visible");
       initAppWithData(data);
-    } else if (data.error === "Invalid PIN") {
-      showPinError("Wrong PIN. Try again.");
-    } else {
-      showPinError(data.error || "Error. Try again.");
-    }
-  } catch (err) { showPinError("Connection error. Try again."); }
+    } else if (data.error === "Invalid PIN") showPinError("Wrong PIN");
+    else showPinError(data.error || "Error");
+  } catch (err) { showPinError("Connection error"); }
 }
 
 function showPinError(msg) {
-  elPinStatus.textContent = msg;
+  elPinStatus.textContent = msg; elPinStatus.style.color = "#dc3545";
   pinInputs.forEach(function(inp) { inp.classList.add("error"); });
   setTimeout(function() {
     pinInputs.forEach(function(inp) { inp.value = ""; inp.classList.remove("error"); });
-    pinInputs[0].focus();
-    elPinStatus.textContent = "";
+    pinInputs[0].focus(); elPinStatus.textContent = "";
   }, 900);
 }
 
 function unlockApp() {
-  elPinScreen.style.display = "none";
-  elApp.classList.add("visible");
-  initApp();
+  elPinScreen.style.display = "none"; elApp.classList.add("visible"); initApp();
 }
 
-document.getElementById("lockBtn").addEventListener("click", function() {
+$("lockBtn").addEventListener("click", function() {
   localStorage.removeItem("reading_tracker_pin");
   userPin = ""; pinInputs.forEach(function(inp) { inp.value = ""; });
   elPinScreen.style.display = "flex"; elApp.classList.remove("visible");
   elPinStatus.textContent = ""; pinInputs[0].focus();
 });
 
-var elBookSelect = document.getElementById("bookSelect");
-var elBookInfo = document.getElementById("bookInfo");
-var elTotalPages = document.getElementById("totalPagesChip");
-var elLastPage = document.getElementById("lastPageChip");
-var elRating = document.getElementById("ratingChip");
-var elProgressSection = document.getElementById("progressSection");
-var elProgressFill = document.getElementById("progressFill");
-var elProgressPages = document.getElementById("progressPages");
-var elProgressPct = document.getElementById("progressPct");
-var elDate = document.getElementById("dateInput");
-var elTime = document.getElementById("timeInput");
-var elEndPage = document.getElementById("endPageInput");
-var elCalcPreview = document.getElementById("calcPreview");
-var elCalcPages = document.getElementById("calcPages");
-var elSubmitBtn = document.getElementById("submitBtn");
-var elRecent = document.getElementById("recentSessions");
-var elToast = document.getElementById("toast");
-
+// Time auto-format
 elTime.addEventListener("input", function() {
-  var raw = elTime.value.replace(/[^\d]/g, "");
-  var f = "";
+  var raw = elTime.value.replace(/[^\d]/g, ""), f = "";
   for (var i = 0; i < raw.length && i < 6; i++) { if (i === 2 || i === 4) f += ":"; f += raw[i]; }
   elTime.value = f;
 });
 elTime.addEventListener("keydown", function(e) {
-  var ok = ["Backspace","Tab","ArrowLeft","ArrowRight","Delete","Home","End"];
-  if (ok.indexOf(e.key) !== -1) return;
+  if (["Backspace","Tab","ArrowLeft","ArrowRight","Delete","Home","End"].indexOf(e.key) !== -1) return;
   if (e.key >= "0" && e.key <= "9") return;
   e.preventDefault();
 });
 
-// Called when PIN was already saved — need to fetch data
+// Init
 async function initApp() {
   elDate.value = new Date().toISOString().split("T")[0];
   try {
     var data = await apiGet({ action: "init", recent_limit: 5 });
-    if (data.ok) initAppWithData(data);
-    else throw new Error(data.error);
-  } catch (err) {
-    console.error("initApp:", err);
-    showToast("Error loading: " + err.message, "error");
-  }
+    if (data.ok) initAppWithData(data); else throw new Error(data.error);
+  } catch (err) { showToast("Error: " + err.message, "error"); }
 }
 
-// Called with data already available (from PIN verify or initApp)
 function initAppWithData(data) {
   elDate.value = new Date().toISOString().split("T")[0];
   books = data.books || [];
-  if (books.length === 0) {
-    elBookSelect.innerHTML = '<option value="">No unfinished books found</option>';
+  if (!books.length) {
+    elBookSelect.innerHTML = '<option value="">No unfinished books</option>';
   } else {
-    var html = "";
-    for (var i = 0; i < books.length; i++) {
-      var b = books[i];
-      html += '<option value="' + b.title + '" data-pages="' + b.total_pages +
-        '" data-rating="' + (b.goodread_rating || "—") +
-        '" data-read="' + (b.pages_read || 0) + '">' +
-        b.title + ' — ' + b.author + '</option>';
-    }
-    elBookSelect.innerHTML = html;
+    elBookSelect.innerHTML = books.map(function(b, i) {
+      return '<option value="' + b.title + '" data-idx="' + i + '">' + b.title + ' — ' + b.author + '</option>';
+    }).join("");
   }
-  renderRecentSessions(data.sessions || []);
-  // Set first book info from the pages_read already in data
   if (books.length > 0) showBookInfo(books[0]);
 }
 
 function showBookInfo(book) {
   totalPages = book.total_pages;
   lastPage = book.pages_read || 0;
-  elTotalPages.innerHTML = '<span class="value">' + totalPages + '</span> pages';
-  elLastPage.textContent = lastPage;
-  elRating.textContent = book.goodread_rating || "—";
-  elBookInfo.style.display = "flex";
+
+  // Cover from cover_url
+  if (book.cover_url) {
+    elBookCover.innerHTML = '<img src="' + book.cover_url + '" alt="' + book.title + '" onerror="this.parentElement.innerHTML=\'<span class=placeholder>📖</span>\'" />';
+  } else {
+    elBookCover.innerHTML = '<span class="placeholder">📖</span>';
+  }
+
+  elBookName.textContent = book.title;
+  elBookAuthor.textContent = book.author;
+  elBookRow.style.display = "flex";
+
+  // Chips
+  elChipTotal.textContent = totalPages;
+  elChipCurrent.textContent = lastPage;
+  elChipLeft.textContent = Math.max(0, totalPages - lastPage);
+  elChipRating.textContent = book.goodread_rating || "—";
+  elChips.style.display = "flex";
+
+  // Progress
   var pct = totalPages > 0 ? Math.round((lastPage / totalPages) * 100) : 0;
   elProgressFill.style.width = pct + "%";
-  elProgressPages.textContent = lastPage + " / " + totalPages + " pages";
   elProgressPct.textContent = pct + "%";
-  elProgressSection.style.display = "block";
-  elCalcPreview.classList.remove("visible");
+  elProgressRow.style.display = "flex";
+
+  elCalcWrap.classList.remove("visible");
   elEndPage.value = "";
-  elEndPage.placeholder = "e.g. " + (lastPage + 20);
+  elEndPage.placeholder = String(Math.min(lastPage + 20, totalPages));
 }
 
-async function onBookChange() {
+elBookSelect.addEventListener("change", function() {
   var title = elBookSelect.value;
-  if (!title) { elBookInfo.style.display = "none"; elProgressSection.style.display = "none"; return; }
-  // Find book in already-loaded data
+  if (!title) { elBookRow.style.display = "none"; elChips.style.display = "none"; elProgressRow.style.display = "none"; return; }
   var book = books.find(function(b) { return b.title === title; });
-  if (book) {
-    showBookInfo(book);
-  }
-}
+  if (book) showBookInfo(book);
+});
 
-function onEndPageInput() {
-  var endPage = parseInt(elEndPage.value);
-  if (!isNaN(endPage) && endPage > lastPage) {
-    elCalcPages.textContent = endPage - lastPage;
-    elCalcPreview.classList.add("visible");
-  } else { elCalcPreview.classList.remove("visible"); }
-}
+elEndPage.addEventListener("input", function() {
+  var ep = parseInt(elEndPage.value);
+  if (!isNaN(ep) && ep > lastPage) {
+    elCalcPages.textContent = ep - lastPage;
+    elCalcWrap.classList.add("visible");
+  } else elCalcWrap.classList.remove("visible");
+});
 
-function parseTimeToSeconds(str) {
-  var parts = str.trim().split(":").map(Number);
-  if (parts.some(isNaN)) return NaN;
-  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-  if (parts.length === 2) return parts[0] * 60 + parts[1];
+function parseTime(str) {
+  var p = str.trim().split(":").map(Number);
+  if (p.some(isNaN)) return NaN;
+  if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
+  if (p.length === 2) return p[0] * 60 + p[1];
   return NaN;
 }
 
 async function apiGet(params) {
   params.pin = userPin;
   var qs = new URLSearchParams(Object.assign({ key: API_KEY }, params)).toString();
-  var res = await fetch(API_BASE + "?" + qs, { redirect: "follow" });
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  return await res.json();
+  return await (await fetch(API_BASE + "?" + qs, { redirect: "follow" })).json();
 }
 
 async function apiPost(payload) {
   payload.pin = userPin;
-  var res = await fetch(API_BASE, {
-    method: "POST", redirect: "follow",
-    headers: { "Content-Type": "text/plain" },
+  return await (await fetch(API_BASE, {
+    method: "POST", redirect: "follow", headers: { "Content-Type": "text/plain" },
     body: JSON.stringify(Object.assign({ key: API_KEY }, payload))
-  });
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  return await res.json();
+  })).json();
 }
 
 async function submit() {
@@ -449,79 +418,43 @@ async function submit() {
   if (!title) return showToast("Select a book", "error");
   if (!date) return showToast("Select a date", "error");
   if (!timeStr) return showToast("Enter time spent", "error");
-  if (isNaN(parseTimeToSeconds(timeStr))) return showToast("Invalid time. Use HH:MM:SS", "error");
-  if (isNaN(endPage) || endPage <= 0) return showToast("Enter a valid page number", "error");
-  if (endPage <= lastPage) return showToast("Page must be greater than " + lastPage, "error");
+  if (isNaN(parseTime(timeStr))) return showToast("Invalid time format", "error");
+  if (isNaN(endPage) || endPage <= 0) return showToast("Enter a valid page", "error");
+  if (endPage <= lastPage) return showToast("Page must be > " + lastPage, "error");
   if (endPage > totalPages) return showToast("Page can't exceed " + totalPages, "error");
-  var pagesRead = endPage - lastPage;
-  var seconds = parseTimeToSeconds(timeStr);
+
+  var pagesRead = endPage - lastPage, seconds = parseTime(timeStr);
   elSubmitBtn.disabled = true; elSubmitBtn.classList.add("loading");
   try {
     var data = await apiPost({
       action: "log_reading", date: date, title: title,
       time_spent: timeStr, pages_read: pagesRead, seconds: seconds
     });
-    if (!data.ok) throw new Error(data.error || "Failed to save");
-    showToast("Saved! " + pagesRead + " pages of \"" + title + "\"", "success");
+    if (!data.ok) throw new Error(data.error || "Save failed");
+    showToast(pagesRead + " pages saved", "success");
+
     lastPage = endPage;
-    // Update the book's pages_read in memory
     var book = books.find(function(b) { return b.title === title; });
     if (book) book.pages_read = lastPage;
-    elLastPage.textContent = lastPage;
     var pct = totalPages > 0 ? Math.round((lastPage / totalPages) * 100) : 0;
+    elChipCurrent.textContent = lastPage;
+    elChipLeft.textContent = Math.max(0, totalPages - lastPage);
     elProgressFill.style.width = pct + "%";
-    elProgressPages.textContent = lastPage + " / " + totalPages + " pages";
     elProgressPct.textContent = pct + "%";
     elTime.value = ""; elEndPage.value = "";
-    elEndPage.placeholder = "e.g. " + (lastPage + 20);
-    elCalcPreview.classList.remove("visible");
-    // Refresh recent sessions only (single call)
-    var recent = await apiGet({ action: "recent", limit: 5 });
-    if (recent.ok) renderRecentSessions(recent.sessions || []);
+    elEndPage.placeholder = String(Math.min(lastPage + 20, totalPages));
+    elCalcWrap.classList.remove("visible");
   } catch (err) { showToast(err.message, "error"); }
   finally { elSubmitBtn.disabled = false; elSubmitBtn.classList.remove("loading"); }
 }
 
-function renderRecentSessions(sessions) {
-  if (sessions.length === 0) {
-    elRecent.innerHTML = '<div class="empty-state">No sessions yet. Start reading!</div>';
-    return;
-  }
-  var html = '<ul class="sessions-list">';
-  for (var i = 0; i < sessions.length; i++) {
-    var s = sessions[i];
-    html += '<li class="session-item"><div class="session-left">' +
-      '<span class="session-date">' + formatDate(s.date) + '</span>' +
-      '<span class="session-book">' + s.title + '</span></div>' +
-      '<div class="session-right">' +
-      '<div class="session-stat"><div class="num">' + s.pages_read + '</div><div class="label">pages</div></div>' +
-      '<div class="session-stat"><div class="num">' + s.time_spent + '</div><div class="label">time</div></div>' +
-      '</div></li>';
-  }
-  elRecent.innerHTML = html + '</ul>';
-}
-
-function formatDate(dateStr) {
-  if (!dateStr || dateStr === "Invalid Date") return "—";
-  try {
-    var p = dateStr.split("-");
-    if (p.length === 3) {
-      var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
-      return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-    }
-    return dateStr;
-  } catch (e) { return dateStr; }
-}
-
-function showToast(message, type) {
-  elToast.textContent = message;
+function showToast(msg, type) {
+  elToast.textContent = msg;
   elToast.className = "toast " + type + " visible";
-  clearTimeout(showToast._timer);
-  showToast._timer = setTimeout(function() { elToast.classList.remove("visible"); }, 3500);
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(function() { elToast.classList.remove("visible"); }, 3000);
 }
 
-elBookSelect.addEventListener("change", onBookChange);
-elEndPage.addEventListener("input", onEndPageInput);
 elSubmitBtn.addEventListener("click", submit);
 document.addEventListener("keydown", function(e) {
   if (e.key === "Enter" && !elSubmitBtn.disabled && elApp.classList.contains("visible")) submit();

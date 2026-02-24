@@ -29,8 +29,9 @@
     }
     .pin-header {
       width: 100%; display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 60px; padding-bottom: 20px; border-bottom: 2px solid #5046e5;
+      margin-bottom: 0; padding-bottom: 0;
     }
+    .pin-separator { width: 100%; height: 2px; background: #5046e5; margin-top: 18px; margin-bottom: 60px; }
     .pin-header-title { font-size: 11px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
     .pin-header-sub { font-size: 11px; font-weight: 600; color: #999; }
     .pin-label {
@@ -58,8 +59,9 @@
 
     .header {
       display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #5046e5;
+      margin-bottom: 0; padding-bottom: 0;
     }
+    .header-separator { width: 100%; height: 2px; background: #5046e5; margin-top: 18px; margin-bottom: 28px; }
     .title { font-size: 11px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
     .date-display { font-size: 11px; font-weight: 600; color: #999; }
 
@@ -177,6 +179,7 @@
         <div class="pin-header-title">Log Reading</div>
         <div class="pin-header-sub">🔒 Locked</div>
       </div>
+      <div class="pin-separator"></div>
       <div class="pin-label">Enter 6-digit PIN</div>
       <div class="pin-wrap" id="pinWrap">
         <input type="text" maxlength="1" inputmode="numeric" class="pin-char" data-idx="0" autofocus />
@@ -194,6 +197,7 @@
         <div class="title">Log Reading</div>
         <div class="date-display" id="headerDate"></div>
       </div>
+      <div class="header-separator"></div>
       <div class="book-row" id="bookRow" style="display:none;">
         <div class="book-cover" id="bookCover"><span class="placeholder">📖</span></div>
         <div class="book-info">

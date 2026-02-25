@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Goals Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #fff; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-font-smoothing: antialiased; font-family: 'Manrope', sans-serif;
+    }
+    .container { width: 800px; max-height: 500px; padding: 28px 36px; overflow: hidden; }
+
+    .header { display: flex; align-items: flex-start; justify-content: space-between; }
+    .title { font-size: 11px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
+    .week-nav { display: flex; align-items: center; gap: 6px; position: relative; }
+    .week-btn {
+      width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+      background: transparent; border: 1.5px solid #e8e6e1; border-radius: 3px;
+      font-size: 13px; cursor: pointer; color: #999; transition: all 0.2s;
+    }
+    .week-btn:hover { border-color: #5046e5; color: #5046e5; }
+    .today-btn {
+      padding: 5px 10px; background: transparent; border: 1.5px solid #e8e6e1; border-radius: 3px;
+      font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 800;
+      letter-spacing: 1px; text-transform: uppercase; color: #999; cursor: pointer; transition: all 0.2s;
+    }
+    .today-btn:hover { border-color: #5046e5; color: #5046e5; }
+    .today-btn.current { border-color: #5046e5; color: #5046e5; background: #ededfc; }
+    .week-label {
+      font-size: 11px; font-weight: 700; color: #999; min-width: 160px; text-align: center;
+      cursor: pointer; padding: 4px 8px; border-radius: 3px; transition: all 0.2s;
+    }
+    .week-label:hover { background: #f6f5f2; color: #666; }
+    .header-sep { width: 100%; height: 2px; background: #5046e5; margin-top: 14px; margin-bottom: 18px; }
+
+    /* Month picker */
+    .month-picker {
+      display: none; position: absolute; top: 38px; right: 0; z-index: 50;
+      background: #fff; border: 1.5px solid #e8e6e1; border-radius: 6px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08); padding: 16px; width: 280px;
+    }
+    .month-picker.open { display: block; }
+    .mp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .mp-nav {
+      width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+      background: transparent; border: 1.5px solid #e8e6e1; border-radius: 3px;
+      font-size: 11px; cursor: pointer; color: #999; transition: all 0.2s;
+    }
+    .mp-nav:hover { border-color: #5046e5; color: #5046e5; }
+    .mp-title { font-size: 12px; font-weight: 800; color: #1a1a1a; }
+    .mp-days-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
+    .mp-day-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #ccc; text-align: center; padding: 4px 0; }
+    .mp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .mp-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #999; border-radius: 4px; cursor: pointer; transition: all 0.15s;
+    }
+    .mp-day:hover { background: #f6f5f2; }
+    .mp-day.empty { cursor: default; }
+    .mp-day.empty:hover { background: transparent; }
+    .mp-day.today { font-weight: 800; color: #5046e5; }
+    .mp-day.in-week { background: #ededfc; color: #5046e5; font-weight: 800; }
+    .mp-weeks { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+    .mp-week-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 10px; border-radius: 4px; cursor: pointer; transition: all 0.15s;
+      font-size: 10px; font-weight: 600; color: #999;
+    }
+    .mp-week-row:hover { background: #f6f5f2; }
+    .mp-week-row.active { background: #ededfc; color: #5046e5; font-weight: 800; }
+    .mp-week-num { font-weight: 800; }
+
+    /* Goal tabs */
+    .goal-tabs { display: flex; gap: 0; margin-bottom: 18px; border-bottom: 1.5px solid #e8e6e1; }
+    .goal-tab {
+      flex: 1; padding: 10px 0; text-align: center;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+      color: #bbb; cursor: pointer; transition: all 0.2s;
+      border-bottom: 2px solid transparent; margin-bottom: -1.5px;
+    }
+    .goal-tab:hover { color: #666; }
+    .goal-tab.active { color: #5046e5; border-bottom-color: #5046e5; }
+    .goal-tab .icon { font-size: 16px; display: block; margin-bottom: 3px; }
+
+    /* Day columns */
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 16px; }
+    .day-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .day-label { font-size: 9px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #ccc; }
+    .day-box {
+      width: 100%; aspect-ratio: 1; max-width: 72px; border-radius: 6px;
+      border: 1.5px solid #e8e6e1; background: #fafaf8;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #ddd;
+      cursor: pointer; transition: all 0.2s; user-select: none;
+    }
+    .day-col.active .day-box { border-color: #5046e5; background: #ededfc; color: #5046e5; }
+    .day-col.active .day-label { color: #5046e5; }
+    .day-col.disabled { opacity: 0.25; pointer-events: none; }
+    .day-col.disabled .day-box { background: #f4f3f0; border-color: #eee; }
+
+    /* Time input per day */
+    .day-time {
+      width: 100%; max-width: 72px; padding: 4px 2px; border: none;
+      border-bottom: 1.5px solid #e8e6e1; font-family: 'Manrope', sans-serif;
+      font-size: 11px; font-weight: 700; color: #1a1a1a; background: transparent;
+      text-align: center; transition: border-color 0.2s;
+    }
+    .day-time:focus { outline: none; border-bottom-color: #5046e5; }
+    .day-time::placeholder { color: #ddd; }
+    .day-col:not(.active) .day-time { opacity: 0.3; pointer-events: none; }
+    .day-col.disabled .day-time { opacity: 0; }
+
+    /* Start date row */
+    .meta-row {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+      padding: 10px 18px; background: #fafaf8; border-radius: 4px;
+    }
+    .meta-label { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #999; flex-shrink: 0; }
+    .meta-input {
+      padding: 5px 8px; border: none; border-bottom: 1.5px solid #e8e6e1;
+      font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700;
+      color: #1a1a1a; background: transparent; transition: border-color 0.2s;
+    }
+    .meta-input:focus { outline: none; border-bottom-color: #5046e5; }
+    .meta-clear {
+      padding: 4px 10px; background: transparent; border: 1px solid #e8e6e1; border-radius: 3px;
+      font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 700;
+      color: #bbb; cursor: pointer; transition: all 0.2s;
+    }
+    .meta-clear:hover { border-color: #dc3545; color: #dc3545; }
+    .meta-status { font-size: 10px; font-weight: 600; color: #bbb; margin-left: auto; }
+
+    /* Disabled notice */
+    .disabled-notice {
+      display: none; text-align: center; padding: 14px; margin-bottom: 16px;
+      font-size: 11px; font-weight: 700; color: #bbb;
+    }
+    .disabled-notice.visible { display: block; }
+    .disabled-notice .accent { color: #5046e5; font-weight: 800; }
+
+    /* Footer */
+    .footer { display: flex; align-items: center; justify-content: space-between; }
+    .summary-wrap { display: flex; flex-direction: column; }
+    .summary-value { font-size: 22px; font-weight: 800; color: #5046e5; }
+    .summary-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #ccc; }
+    .footer-actions { display: flex; align-items: center; gap: 10px; }
+    .reset-btn {
+      padding: 8px 16px; background: transparent; border: 1.5px solid #e8e6e1; border-radius: 3px;
+      font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 700;
+      color: #999; cursor: pointer; transition: all 0.2s;
+    }
+    .reset-btn:hover { border-color: #999; color: #666; }
+    .save-btn {
+      padding: 9px 24px; background: #5046e5; color: white; border: none;
+      font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer;
+      transition: all 0.2s; box-shadow: 0 3px 10px rgba(80,70,229,0.2);
+    }
+    .save-btn:hover { background: #4038c7; transform: translateY(-1px); }
+
+    .toast {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%) translateY(20px); padding: 10px 20px;
+      border-radius: 4px; font-size: 12px; font-weight: 700; opacity: 0;
+      transition: all 0.3s; pointer-events: none; z-index: 100; text-align: center;
+    }
+    .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #edf8f3; border: 1px solid #c8eddb; color: #16a06e; }
+    .toast.error { background: #fdf0f1; border: 1px solid #f5c6cb; color: #dc3545; }
+
+    .save-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .save-btn.loading { color: transparent; position: relative; }
+    .save-btn.loading::after {
+      content: ''; position: absolute; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; top: 50%; left: 50%; margin: -7px 0 0 -7px;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">Weekly Plan</div>
+      <div class="week-nav">
+        <button class="today-btn" id="todayBtn">Today</button>
+        <button class="week-btn" id="prevWeek">‹</button>
+        <div class="week-label" id="weekLabel" title="Click to pick a week"></div>
+        <button class="week-btn" id="nextWeek">›</button>
+        <div class="month-picker" id="monthPicker"></div>
+      </div>
+    </div>
+    <div class="header-sep"></div>
+
+    <div class="goal-tabs" id="goalTabs">
+      <div class="goal-tab active" data-goal="Reading"><span class="icon">📖</span>Reading</div>
+      <div class="goal-tab" data-goal="Gym"><span class="icon">🏋️</span>Gym</div>
+      <div class="goal-tab" data-goal="Running"><span class="icon">🏃</span>Running</div>
+      <div class="goal-tab" data-goal="Learning"><span class="icon">🎓</span>Learning</div>
+      <div class="goal-tab" data-goal="Development"><span class="icon">📊</span>Dev</div>
+    </div>
+
+    <div class="disabled-notice" id="disabledNotice">
+      This goal starts <span class="accent" id="startInfo"></span>
+    </div>
+
+    <div class="days-grid" id="daysGrid"></div>
+
+    <div class="meta-row" id="startDateRow">
+      <div class="meta-label">Starts</div>
+      <input type="date" class="meta-input" id="startDateInput" />
+      <button class="meta-clear" id="startDateClear">Clear</button>
+      <div class="meta-status" id="startDateStatus"></div>
+    </div>
+
+    <div class="footer">
+      <div class="summary-wrap">
+        <div class="summary-value" id="summaryValue">—</div>
+        <div class="summary-label" id="summaryLabel">Weekly total</div>
+      </div>
+      <div class="footer-actions">
+        <button class="reset-btn" id="resetBtn">Reset</button>
+        <button class="save-btn" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+var DAY_NAMES = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+// API Config — same Apps Script project, routed by API key
+var API_BASE = "https://script.google.com/macros/s/AKfycbyoEsXTiQRtmyetVXhE_lRrCDs7SjJhBvzl9Jj_YcQdVW86wXv2CeNxXWrpBRIw70cZ/exec";
+var API_KEY = "LS_Goals_tracker_2026";
+var PIN = "202601";
+
+// Goal definitions
+var GOALS = {
+  Reading:     { type: "time", defaultTime: "01:00", startDate: null },
+  Gym:         { type: "session", startDate: null },
+  Running:     { type: "session", startDate: "2026-04-01" },
+  Learning:    { type: "time", defaultTime: "01:00", startDate: null },
+  Development: { type: "time", defaultTime: "01:00", startDate: null },
+};
+
+// Default active days per goal: 1 = active, 0 = off
+var DEFAULT_DAYS = {
+  Reading:     [1,1,1,1,1,1,1],
+  Gym:         [1,0,1,0,1,0,0],
+  Running:     [0,1,0,1,0,1,0],
+  Learning:    [1,1,1,1,1,0,0],
+  Development: [1,1,1,1,1,0,0],
+};
+
+var currentGoal = "Reading";
+var currentWeekStart = getMonday(new Date());
+var pickerMonth = new Date(currentWeekStart);
+var pickerOpen = false;
+
+// weekData[weekKey][goal] = { days: [1,0,...], times: ["01:00","","01:00",...] }
+var weekData = {};
+
+function getMonday(d) {
+  var date = new Date(d); var day = date.getDay();
+  date.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
+  date.setHours(0,0,0,0); return date;
+}
+function formatWeekKey(d) { return d.toISOString().split("T")[0]; }
+function formatWeekLabel(d) {
+  var end = new Date(d); end.setDate(end.getDate() + 6);
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + " — " + end.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+function getWeekNumber(d) {
+  var date = new Date(d); date.setHours(0,0,0,0);
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  var w1 = new Date(date.getFullYear(), 0, 4);
+  return 1 + Math.round(((date - w1) / 86400000 - 3 + (w1.getDay() + 6) % 7) / 7);
+}
+function isSameWeek(a, b) { return formatWeekKey(getMonday(a)) === formatWeekKey(getMonday(b)); }
+function isCurrentWeekToday() { return isSameWeek(currentWeekStart, new Date()); }
+
+function getWeekData(weekKey) {
+  if (!weekData[weekKey]) {
+    weekData[weekKey] = {};
+    Object.keys(GOALS).forEach(function(g) {
+      var goal = GOALS[g];
+      var times = DEFAULT_DAYS[g].map(function(active) {
+        if (!active) return "";
+        return goal.type === "time" ? goal.defaultTime : "1";
+      });
+      weekData[weekKey][g] = { days: DEFAULT_DAYS[g].slice(), times: times };
+    });
+  }
+  return weekData[weekKey];
+}
+
+// ── Build day columns ──
+function buildDaysGrid() {
+  var grid = document.getElementById("daysGrid");
+  var html = "";
+  for (var i = 0; i < 7; i++) {
+    html += '<div class="day-col" data-day="' + i + '">';
+    html += '<div class="day-label">' + DAY_NAMES[i] + '</div>';
+    html += '<div class="day-box" data-day="' + i + '"></div>';
+    html += '<input type="text" class="day-time" data-day="' + i + '" maxlength="5" placeholder="—" />';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+
+  // Toggle day on/off
+  grid.querySelectorAll(".day-box").forEach(function(box) {
+    box.addEventListener("click", function() {
+      var col = box.closest(".day-col");
+      if (col.classList.contains("disabled")) return;
+      var idx = parseInt(box.dataset.day);
+      var weekKey = formatWeekKey(currentWeekStart);
+      var data = getWeekData(weekKey)[currentGoal];
+      var goal = GOALS[currentGoal];
+      if (data.days[idx] === 1) {
+        data.days[idx] = 0;
+        data.times[idx] = "";
+      } else {
+        data.days[idx] = 1;
+        data.times[idx] = goal.type === "time" ? goal.defaultTime : "1";
+      }
+      render();
+    });
+  });
+
+  // Edit time per day
+  grid.querySelectorAll(".day-time").forEach(function(input) {
+    input.addEventListener("input", function() {
+      var idx = parseInt(input.dataset.day);
+      var weekKey = formatWeekKey(currentWeekStart);
+      var data = getWeekData(weekKey)[currentGoal];
+      var goal = GOALS[currentGoal];
+      if (goal.type === "time") {
+        // Auto-format hh:mm
+        var raw = input.value.replace(/[^\d]/g, ""), f = "";
+        for (var i = 0; i < raw.length && i < 4; i++) { if (i === 2) f += ":"; f += raw[i]; }
+        input.value = f;
+      }
+      data.times[idx] = input.value;
+      updateSummary();
+    });
+    input.addEventListener("keydown", function(e) {
+      var goal = GOALS[currentGoal];
+      if (goal.type === "time") {
+        if (["Backspace","Tab","ArrowLeft","ArrowRight","Delete","Home","End"].indexOf(e.key) !== -1) return;
+        if (e.key >= "0" && e.key <= "9") return;
+        e.preventDefault();
+      }
+    });
+  });
+}
+
+// ── Render ──
+function render() {
+  var weekKey = formatWeekKey(currentWeekStart);
+  var wn = getWeekNumber(currentWeekStart);
+  document.getElementById("weekLabel").textContent = "W" + wn + " · " + formatWeekLabel(currentWeekStart);
+  document.getElementById("todayBtn").classList.toggle("current", isCurrentWeekToday());
+
+  // Goal tabs
+  document.querySelectorAll(".goal-tab").forEach(function(tab) {
+    tab.classList.toggle("active", tab.dataset.goal === currentGoal);
+  });
+
+  var data = getWeekData(weekKey)[currentGoal];
+  var goal = GOALS[currentGoal];
+  var isSession = goal.type === "session";
+
+  // Start date logic
+  var startDate = goal.startDate ? new Date(goal.startDate + "T00:00:00") : null;
+  var weekEnd = new Date(currentWeekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+  var weekBeforeStart = startDate && weekEnd < startDate;
+
+  // Start date row
+  document.getElementById("startDateInput").value = goal.startDate || "";
+  var status = document.getElementById("startDateStatus");
+  if (startDate) {
+    var sOpts = { day: "numeric", month: "short", year: "numeric" };
+    if (weekBeforeStart) { status.textContent = "Starts " + startDate.toLocaleDateString("en-GB", sOpts); status.style.color = "#bbb"; }
+    else if (currentWeekStart >= startDate) { status.textContent = "✓ Active"; status.style.color = "#16a06e"; }
+    else { status.textContent = "Starts mid-week"; status.style.color = "#e6a817"; }
+  } else { status.textContent = "Always active"; status.style.color = "#bbb"; }
+
+  // Disabled notice
+  var notice = document.getElementById("disabledNotice");
+  if (weekBeforeStart) {
+    document.getElementById("startInfo").textContent = startDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    notice.classList.add("visible");
+  } else { notice.classList.remove("visible"); }
+
+  // Day columns
+  var cols = document.querySelectorAll(".day-col");
+  var timeInputs = document.querySelectorAll(".day-time");
+  cols.forEach(function(col, i) {
+    var dayDate = new Date(currentWeekStart); dayDate.setDate(dayDate.getDate() + i);
+    var beforeStart = startDate && dayDate < startDate;
+    var isActive = !beforeStart && data.days[i] === 1;
+
+    col.classList.toggle("active", isActive);
+    col.classList.toggle("disabled", beforeStart);
+
+    var box = col.querySelector(".day-box");
+    if (beforeStart) box.textContent = "—";
+    else if (isActive) box.textContent = "✓";
+    else box.textContent = "";
+
+    var input = timeInputs[i];
+    if (isSession) {
+      input.style.display = "none";
+    } else {
+      input.style.display = "";
+      input.value = isActive ? (data.times[i] || goal.defaultTime) : "";
+      input.placeholder = goal.defaultTime;
+    }
+  });
+
+  updateSummary();
+}
+
+function updateSummary() {
+  var weekKey = formatWeekKey(currentWeekStart);
+  var data = getWeekData(weekKey)[currentGoal];
+  var goal = GOALS[currentGoal];
+  var isSession = goal.type === "session";
+  var activeDays = data.days.reduce(function(s, v) { return s + v; }, 0);
+
+  if (isSession) {
+    document.getElementById("summaryValue").textContent = activeDays;
+    document.getElementById("summaryLabel").textContent = "Sessions";
+  } else {
+    var totalMins = 0;
+    data.times.forEach(function(t, i) {
+      if (data.days[i] !== 1 || !t) return;
+      var p = t.split(":").map(Number);
+      if (p.length >= 2 && !p.some(isNaN)) totalMins += p[0] * 60 + p[1];
+    });
+    var h = Math.floor(totalMins / 60), m = totalMins % 60;
+    document.getElementById("summaryValue").textContent = h + "h" + (m ? " " + m + "m" : "");
+    document.getElementById("summaryLabel").textContent = "Weekly total";
+  }
+}
+
+// ── Month Picker ──
+function renderMonthPicker() {
+  var mp = document.getElementById("monthPicker");
+  var year = pickerMonth.getFullYear(), month = pickerMonth.getMonth();
+  var monthName = pickerMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  var today = new Date(); today.setHours(0,0,0,0);
+  var firstDay = new Date(year, month, 1);
+  var startOffset = (firstDay.getDay() + 6) % 7;
+  var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  var html = '<div class="mp-header"><button class="mp-nav" id="mpPrev">‹</button><div class="mp-title">' + monthName + '</div><button class="mp-nav" id="mpNext">›</button></div>';
+  html += '<div class="mp-days-header">';
+  ["M","T","W","T","F","S","S"].forEach(function(d) { html += '<div class="mp-day-label">' + d + '</div>'; });
+  html += '</div><div class="mp-grid">';
+  for (var e = 0; e < startOffset; e++) html += '<div class="mp-day empty"></div>';
+  for (var d = 1; d <= daysInMonth; d++) {
+    var date = new Date(year, month, d);
+    var cls = "mp-day";
+    if (date.getTime() === today.getTime()) cls += " today";
+    if (isSameWeek(date, currentWeekStart)) cls += " in-week";
+    html += '<div class="' + cls + '" data-date="' + date.toISOString().split("T")[0] + '">' + d + '</div>';
+  }
+  html += '</div><div class="mp-weeks">';
+  var ws = getMonday(new Date(year, month, 1));
+  for (var w = 0; w < 6; w++) {
+    var wEnd = new Date(ws); wEnd.setDate(wEnd.getDate() + 6);
+    if (ws.getMonth() > month && wEnd.getMonth() > month) break;
+    var isActive = isSameWeek(ws, currentWeekStart);
+    html += '<div class="mp-week-row' + (isActive ? ' active' : '') + '" data-week="' + formatWeekKey(ws) + '"><span class="mp-week-num">W' + getWeekNumber(ws) + '</span><span>' + ws.toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + ' — ' + wEnd.toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + '</span></div>';
+    ws = new Date(ws); ws.setDate(ws.getDate() + 7);
+  }
+  html += '</div>';
+  mp.innerHTML = html;
+
+  document.getElementById("mpPrev").addEventListener("click", function(e) { e.stopPropagation(); pickerMonth.setMonth(pickerMonth.getMonth() - 1); renderMonthPicker(); });
+  document.getElementById("mpNext").addEventListener("click", function(e) { e.stopPropagation(); pickerMonth.setMonth(pickerMonth.getMonth() + 1); renderMonthPicker(); });
+  mp.querySelectorAll(".mp-day:not(.empty)").forEach(function(el) {
+    el.addEventListener("click", function(e) { e.stopPropagation(); currentWeekStart = getMonday(new Date(el.dataset.date)); closePicker(); render(); });
+  });
+  mp.querySelectorAll(".mp-week-row").forEach(function(el) {
+    el.addEventListener("click", function(e) { e.stopPropagation(); currentWeekStart = new Date(el.dataset.week); closePicker(); render(); });
+  });
+}
+function openPicker() { pickerMonth = new Date(currentWeekStart); pickerOpen = true; document.getElementById("monthPicker").classList.add("open"); renderMonthPicker(); }
+function closePicker() { pickerOpen = false; document.getElementById("monthPicker").classList.remove("open"); }
+
+// ── Events ──
+document.getElementById("weekLabel").addEventListener("click", function(e) { e.stopPropagation(); pickerOpen ? closePicker() : openPicker(); });
+document.addEventListener("click", function() { if (pickerOpen) closePicker(); });
+document.getElementById("monthPicker").addEventListener("click", function(e) { e.stopPropagation(); });
+document.getElementById("todayBtn").addEventListener("click", function() { currentWeekStart = getMonday(new Date()); closePicker(); render(); });
+document.getElementById("prevWeek").addEventListener("click", function() { currentWeekStart.setDate(currentWeekStart.getDate() - 7); render(); });
+document.getElementById("nextWeek").addEventListener("click", function() { currentWeekStart.setDate(currentWeekStart.getDate() + 7); render(); });
+
+document.getElementById("goalTabs").addEventListener("click", function(e) {
+  var tab = e.target.closest(".goal-tab");
+  if (tab) { currentGoal = tab.dataset.goal; render(); }
+});
+
+document.getElementById("startDateInput").addEventListener("change", function() { GOALS[currentGoal].startDate = this.value || null; render(); });
+document.getElementById("startDateClear").addEventListener("click", function() { GOALS[currentGoal].startDate = null; render(); });
+
+document.getElementById("resetBtn").addEventListener("click", function() {
+  var weekKey = formatWeekKey(currentWeekStart);
+  var goal = GOALS[currentGoal];
+  weekData[weekKey][currentGoal] = {
+    days: DEFAULT_DAYS[currentGoal].slice(),
+    times: DEFAULT_DAYS[currentGoal].map(function(a) { return a ? (goal.type === "time" ? goal.defaultTime : "1") : ""; })
+  };
+  render();
+});
+
+document.getElementById("saveBtn").addEventListener("click", async function() {
+  var weekKey = formatWeekKey(currentWeekStart);
+  var data = getWeekData(weekKey);
+  var btn = document.getElementById("saveBtn");
+  btn.disabled = true; btn.classList.add("loading");
+  try {
+    var resp = await fetch(API_BASE, {
+      method: "POST", redirect: "follow",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        key: API_KEY, pin: PIN, action: "save_week",
+        week_start: weekKey, goals: data
+      })
+    });
+    var result = await resp.json();
+    if (!result.ok) throw new Error(result.error || "Save failed");
+    showToast("Week saved — " + result.updated + " rows updated", "success");
+  } catch (err) {
+    showToast("Error: " + err.message, "error");
+  } finally {
+    btn.disabled = false; btn.classList.remove("loading");
+  }
+});
+
+// Load week data from API
+var loadedWeeks = {}; // track which weeks we've loaded
+async function loadWeek(weekKey) {
+  if (loadedWeeks[weekKey]) return; // already loaded
+  try {
+    var qs = new URLSearchParams({ key: API_KEY, pin: PIN, action: "get_week", week_start: weekKey }).toString();
+    var resp = await fetch(API_BASE + "?" + qs, { redirect: "follow" });
+    var result = await resp.json();
+    if (result.ok && result.goals) {
+      // Merge API data into weekData
+      if (!weekData[weekKey]) weekData[weekKey] = {};
+      for (var goalName in result.goals) {
+        weekData[weekKey][goalName] = result.goals[goalName];
+      }
+      loadedWeeks[weekKey] = true;
+    }
+  } catch (err) {
+    console.error("Load error:", err);
+  }
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast " + (type || "success") + " visible";
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(function() { t.classList.remove("visible"); }, 2500);
+}
+
+// Wrap render to load from API first
+var _origRender = render;
+render = async function() {
+  var weekKey = formatWeekKey(currentWeekStart);
+  await loadWeek(weekKey);
+  _origRender();
+};
+
+// Init
+buildDaysGrid();
+render();
+</script>
+</body>
+</html>
